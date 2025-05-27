@@ -1,0 +1,132 @@
+[
+  {
+    "fields": [
+      {
+        "name": "fullName",
+        "type": "string",
+        "title": "Owner’s Full Name"
+      },
+      {
+        "name": "businessName",
+        "type": "string",
+        "title": "Business/Shop Name"
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "title": "Email Address"
+      },
+      {
+        "name": "phoneNumber",
+        "type": "string"
+      },
+      {
+        "description": "This should ideally be hashed or stored in a secure auth service.",
+        "name": "password",
+        "type": "string"
+      },
+      {
+        "name": "shopAddress",
+        "type": "string"
+      },
+      {
+        "name": "businessLicense",
+        "type": "string",
+        "title": "Business License Number / Registration ID"
+      },
+      {
+        "name": "taxId",
+        "type": "string",
+        "title": "Tax Identification Number (TIN) / VAT Number"
+      },
+      {
+        "name": "serviceAreaRadius",
+        "type": "number",
+        "title": "Service Area or Coverage Radius (in km or miles)"
+      },
+      {
+        "description": "Business license, tax documents, insurance, etc.",
+        "of": [
+          {
+            "type": "file"
+          }
+        ],
+        "name": "documents",
+        "type": "array",
+        "title": "Uploaded Documents"
+      }
+    ],
+    "name": "bodyShopOwner",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "name": "manufacturer",
+        "type": "string"
+      },
+      {
+        "name": "type",
+        "type": "string"
+      },
+      {
+        "name": "model",
+        "type": "string"
+      },
+      {
+        "name": "year",
+        "type": "number"
+      },
+      {
+        "name": "licenceNumber",
+        "type": "string"
+      },
+      {
+        "name": "color",
+        "type": "string"
+      },
+      {
+        "name": "vin",
+        "type": "string",
+        "title": "VIN Number"
+      },
+      {
+        "fields": [
+          {
+            "name": "company",
+            "type": "string",
+            "title": "Insurance Company"
+          },
+          {
+            "name": "policyNumber",
+            "type": "string"
+          },
+          {
+            "name": "expiryDate",
+            "type": "date",
+            "title": "Policy Expiry Date"
+          },
+          {
+            "name": "isCoverageValid",
+            "type": "boolean",
+            "title": "Coverage is Currently Valid"
+          }
+        ],
+        "name": "insurance",
+        "type": "object",
+        "title": "Insurance Information"
+      },
+      {
+        "of": [
+          {
+            "type": "image"
+          }
+        ],
+        "name": "damagePhotos",
+        "type": "array"
+      }
+    ],
+    "name": "vehicle",
+    "type": "document"
+  }
+]

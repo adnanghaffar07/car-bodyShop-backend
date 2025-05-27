@@ -1,0 +1,19 @@
+<form method="POST" action="/api/submit-vehicle" enctype="multipart/form-data">
+  <!-- Required Vehicle Info -->
+  <input type="text" name="manufacturer" value="Honda" required />
+  <input type="text" name="type" value="SUV" required />
+  <input type="text" name="model" value="CRV" required />
+  <input type="number" name="year" value="2020" required />
+  <input type="text" name="vin" value="XYZ123" required />
+
+  <!-- Insurance -->
+  <input type="text" name="insuranceCompany" value="Geico" />
+  <input type="text" name="policyNumber" value="123456" />
+  <input type="date" name="policyExpiryDate" value="2025-12-12" />
+  <input type="hidden" name="isCoverageValid" value="true" />
+
+  <!-- Upload Damage Photos -->
+  <input type="file" name="damagePhotos" accept="image/*" multiple required />
+
+  <button type="submit">Submit</button>
+</form>
