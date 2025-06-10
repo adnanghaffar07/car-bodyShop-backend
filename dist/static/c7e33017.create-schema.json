@@ -62,33 +62,94 @@
   {
     "fields": [
       {
-        "name": "manufacturer",
+        "name": "fullName",
         "type": "string"
       },
       {
-        "name": "type",
-        "type": "string"
-      },
-      {
-        "name": "model",
-        "type": "string"
-      },
-      {
-        "name": "year",
-        "type": "number"
-      },
-      {
-        "name": "licenceNumber",
-        "type": "string"
-      },
-      {
-        "name": "color",
-        "type": "string"
-      },
-      {
-        "name": "vin",
+        "name": "email",
         "type": "string",
-        "title": "VIN Number"
+        "title": "Email Address"
+      },
+      {
+        "name": "phoneNumber",
+        "type": "string"
+      },
+      {
+        "name": "createdBy",
+        "type": "string",
+        "title": "Created By (Owner)"
+      },
+      {
+        "fields": [
+          {
+            "name": "manufacturer",
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "type": "string"
+          },
+          {
+            "name": "model",
+            "type": "string"
+          },
+          {
+            "name": "year",
+            "type": "number"
+          },
+          {
+            "name": "licenceNumber",
+            "type": "string"
+          },
+          {
+            "name": "color",
+            "type": "string"
+          },
+          {
+            "name": "vin",
+            "type": "string",
+            "title": "VIN Number"
+          },
+          {
+            "of": [
+              {
+                "type": "image"
+              }
+            ],
+            "name": "damagePhotos",
+            "type": "array"
+          }
+        ],
+        "name": "vehicle",
+        "type": "object",
+        "title": "Vehicle Information"
+      },
+      {
+        "fields": [
+          {
+            "of": [
+              {
+                "fields": [
+                  {
+                    "name": "partName",
+                    "type": "string"
+                  },
+                  {
+                    "name": "price",
+                    "type": "number"
+                  }
+                ],
+                "type": "object",
+                "title": "Spare Part"
+              }
+            ],
+            "name": "spareParts",
+            "type": "array"
+          }
+        ],
+        "name": "spareParts",
+        "type": "object",
+        "title": "Spare Parts Information"
       },
       {
         "fields": [
@@ -115,18 +176,10 @@
         "name": "insurance",
         "type": "object",
         "title": "Insurance Information"
-      },
-      {
-        "of": [
-          {
-            "type": "image"
-          }
-        ],
-        "name": "damagePhotos",
-        "type": "array"
       }
     ],
-    "name": "vehicle",
-    "type": "document"
+    "name": "customerVehicleInfo",
+    "type": "document",
+    "title": "Customer & Vehicle Info"
   }
 ]

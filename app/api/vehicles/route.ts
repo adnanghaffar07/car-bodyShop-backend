@@ -395,5 +395,152 @@ const vehicleData = {
     Sports: ['Commodore SS']
   }
 };
-  return NextResponse.json(vehicleData);
+
+const spareParts = [
+  // Engine Components
+  'Engine Oil',
+  'Oil Filter',
+  'Air Filter',
+  'Fuel Filter',
+  'Spark Plug',
+  'Glow Plug',
+  'Timing Belt',
+  'Timing Chain',
+  'Serpentine Belt',
+  'Cylinder Head',
+  'Gasket Set',
+  'Piston',
+  'Crankshaft',
+  'Camshaft',
+
+  // Transmission & Drivetrain
+  'Clutch Plate',
+  'Pressure Plate',
+  'Flywheel',
+  'Gearbox',
+  'Driveshaft',
+  'Differential',
+  'Axle Shaft',
+  'Transmission Fluid',
+
+  // Braking System
+  'Brake Pads',
+  'Brake Discs',
+  'Brake Calipers',
+  'Brake Lines',
+  'Brake Drum',
+  'ABS Sensor',
+  'Master Cylinder',
+
+  // Suspension & Steering
+  'Shock Absorber',
+  'Struts',
+  'Control Arm',
+  'Ball Joint',
+  'Tie Rod End',
+  'Steering Rack',
+  'Power Steering Pump',
+  'Stabilizer Bar',
+
+  // Cooling System
+  'Radiator',
+  'Radiator Fan',
+  'Water Pump',
+  'Thermostat',
+  'Coolant Reservoir',
+  'Heater Core',
+  'Cooling Hose',
+
+  // Electrical System
+  'Battery',
+  'Alternator',
+  'Starter Motor',
+  'Ignition Coil',
+  'Fuse Box',
+  'Wiring Harness',
+  'ECU (Engine Control Unit)',
+  'Relays and Fuses',
+
+  // Lighting & Visibility
+  'Headlights',
+  'Tail Light',
+  'Fog Light',
+  'Turn Signal Light',
+  'Interior Dome Light',
+  'Side Mirror Indicator',
+  'Windshield Wiper',
+  'Wiper Motor',
+  'Washer Pump',
+
+  // HVAC (Heating, Ventilation, Air Conditioning)
+  'AC Compressor',
+  'AC Condenser',
+  'AC Evaporator',
+  'AC Blower Motor',
+  'Cabin Air Filter',
+  'Climate Control Panel',
+
+  // Fuel System
+  'Fuel Pump',
+  'Fuel Injector',
+  'Fuel Tank',
+  'Throttle Body',
+  'Carburetor',
+  'Fuel Rail',
+
+  // Exhaust System
+  'Muffler',
+  'Catalytic Converter',
+  'Exhaust Manifold',
+  'Oxygen Sensor',
+  'Tailpipe',
+
+  // Body & Exterior
+  'Bumper',
+  'Grille',
+  'Bonnet (Hood)',
+  'Trunk Lid (Boot)',
+  'Fender',
+  'Door Handle',
+  'Side Mirror',
+  'Rear View Mirror',
+  'Windshield',
+  'Windows',
+  'Spoiler',
+
+  // Interior Components
+  'Dashboard',
+  'Steering Wheel',
+  'Gear Knob',
+  'Car Seat',
+  'Floor Mat',
+  'Center Console',
+  'Instrument Cluster',
+  'Interior Trim',
+
+  // Tires & Wheels
+  'Tire',
+  'Wheel Rim',
+  'Wheel Hub',
+  'Wheel Bearing',
+  'Lug Nut',
+  'Tire Valve',
+
+  // Safety & Security
+  'Airbag',
+  'Seat Belt',
+  'Parking Sensor',
+  'Reverse Camera',
+  'Immobilizer',
+  'Central Locking System',
+
+  // Miscellaneous
+  'Hoses & Belts',
+  'Clips & Fasteners',
+  'Rubber Bushings',
+  'Seals and O-Rings',
+  'Mounts & Brackets'
+];
+
+  return NextResponse.json({ vehicleData, spareParts });
 }

@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "@pdf-lib/standard-fonts": "^1.0.0",
     "@sanity/client": "^7.3.0",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.89.0",
@@ -16,6 +18,9 @@
     "jsonwebtoken": "^9.0.2",
     "next": "15.3.2",
     "next-sanity": "^9.11.1",
+    "nodemailer": "^7.0.3",
+    "pdf-lib": "^1.17.1",
+    "pdfkit": "^0.17.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sanity": "^3.89.0",
@@ -28,6 +33,8 @@
     "@types/formidable": "^3.4.5",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^20",
+    "@types/nodemailer": "^6.4.17",
+    "@types/pdfkit": "^0.13.9",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",

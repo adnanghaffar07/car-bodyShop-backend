@@ -16,44 +16,40 @@ type DocumentItem = {
   };
 };
 
-export async function POST(req: NextRequest) {
+export async function PUT(req: NextRequest) {
   try {
-    // Only accept multipart/form-data
     const contentType = req.headers.get('content-type') || '';
     if (!contentType.includes('multipart/form-data')) {
-      return NextResponse.json(
-        { error: 'Content-Type must be multipart/form-data' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Content-Type must be multipart/form-data' }, { status: 400 });
     }
 
     const formData = await req.formData();
+    const ownerId = formData.get('_id'); // You MUST pass this for update
 
-    const requiredFields = ['fullName', 'businessName', 'email', 'phoneNumber', 'password', 'shopAddress'];
-    const data: Record<string, string> = {};
-
-    for (const field of requiredFields) {
-      const value = formData.get(field);
-      if (!value || typeof value !== 'string') {
-        return NextResponse.json({ error: `${field} is required.` }, { status: 400 });
-      }
-      data[field] = value;
+    if (!ownerId || typeof ownerId !== 'string') {
+      return NextResponse.json({ error: '_id is required for update' }, { status: 400 });
     }
 
-    // Optional fields
+    const updatableFields = ['fullName', 'businessName', 'email', 'phoneNumber', 'password', 'shopAddress'];
+    const data: Record<string, string> = {};
+
+    for (const field of updatableFields) {
+      const value = formData.get(field);
+      if (value && typeof value === 'string') {
+        data[field] = value;
+      }
+    }
+
     const businessLicense = formData.get('businessLicense');
     const taxId = formData.get('taxId');
     const serviceAreaRadius = formData.get('serviceAreaRadius');
 
-    // Process documents
     const documents: DocumentItem[] = [];
     const files = formData.getAll('documents');
 
     for (const file of files) {
       if (file instanceof File) {
-        const arrayBuffer = await file.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-
+        const buffer = Buffer.from(await file.arrayBuffer());
         const asset = await client.assets.upload('file', buffer, {
           filename: file.name,
           contentType: file.type,
@@ -70,25 +66,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const ownerDoc = {
-      _type: 'bodyShopOwner',
-      fullName: data.fullName,
-      businessName: data.businessName,
-      email: data.email,
-      phoneNumber: data.phoneNumber,
-      password: data.password,
-      shopAddress: data.shopAddress,
+    const updateDoc = {
+      ...data,
       businessLicense: typeof businessLicense === 'string' ? businessLicense : '',
       taxId: typeof taxId === 'string' ? taxId : '',
       serviceAreaRadius: serviceAreaRadius ? Number(serviceAreaRadius) : null,
       documents,
     };
 
-    const createdOwner = await client.create(ownerDoc);
+    const updated = await client
+      .patch(ownerId)
+      .set(updateDoc)
+      .commit();
 
-    return NextResponse.json({ success: true, id: createdOwner._id });
+    return NextResponse.json({ success: true, updated });
   } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    console.error('Update error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

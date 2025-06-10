@@ -21,15 +21,19 @@ export async function POST(request: Request) {
     try {
         const contentType = request.headers.get('content-type') || '';
         if (!contentType.includes('multipart/form-data')) {
-            return NextResponse.json(
-                { error: 'Content-Type must be multipart/form-data' },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: 'Content-Type must be multipart/form-data' }, { status: 400 });
         }
 
         const formData = await request.formData();
 
-        // Required vehicle fields
+        // ✅ Customer Info
+        const fullName = formData.get('fullName')?.toString().trim();
+        const email = formData.get('email')?.toString().trim();
+        const phoneNumber = formData.get('phoneNumber')?.toString().trim();
+         const createdBy = formData.get('createdBy')?.toString().trim();
+
+
+        // ✅ Vehicle Info
         const manufacturer = formData.get('manufacturer')?.toString().trim();
         const type = formData.get('type')?.toString().trim();
         const model = formData.get('model')?.toString().trim();
@@ -39,94 +43,106 @@ export async function POST(request: Request) {
         const licenceNumber = formData.get('licenceNumber')?.toString().trim();
         const color = formData.get('color')?.toString().trim();
 
-        // Insurance fields
-        const insuranceCompany = formData.get('insuranceCompany')?.toString().trim() || '';
-        const policyNumber = formData.get('policyNumber')?.toString().trim() || '';
-        const policyExpiryDateRaw = formData.get('policyExpiryDate')?.toString().trim() || '';
+        // ✅ Insurance Info
+        const insuranceCompany = formData.get('insuranceCompany')?.toString().trim();
+        const policyNumber = formData.get('policyNumber')?.toString().trim();
+        const policyExpiryDateRaw = formData.get('policyExpiryDate')?.toString().trim();
         const isCoverageValid = ['true', 'on', '1'].includes(
             formData.get('isCoverageValid')?.toString().toLowerCase() || ''
         );
 
-        // Validate required fields
-        if (![manufacturer, type, model, year, vin, licenceNumber, color].every(Boolean) || !year || isNaN(year)) {
+        // ✅ Spare Parts Array (format: partName[] and price[])
+        const partNames = formData.getAll('partName');
+        const partPrices = formData.getAll('price');
+
+        const sparePartsArray = partNames.map((part, index) => {
+            const name = part.toString().trim();
+            const price = parseFloat(partPrices[index]?.toString().trim() || '0');
+            return {
+                _key: uuidv4(),
+                _type: 'object',
+                partName: name,
+                price: price,
+            };
+        });
+
+        // ✅ Validate required fields
+        if (
+            ![manufacturer, type, model, year, vin, licenceNumber, color, fullName, phoneNumber].every(Boolean) ||
+            year === null ||
+            isNaN(year)
+        ) {
             return NextResponse.json({ error: 'Missing or invalid required fields' }, { status: 400 });
         }
 
-        // Convert policyExpiryDate to Sanity date format (YYYY-MM-DD)
+        // ✅ Format insurance expiry date
         let policyExpiryDate: string | null = null;
-
         if (policyExpiryDateRaw) {
             const isValidFormat = /^\d{4}-\d{2}-\d{2}$/.test(policyExpiryDateRaw);
-
             const parsedDate = new Date(policyExpiryDateRaw);
             const isValidDate = !isNaN(parsedDate.getTime());
-
             if (isValidFormat && isValidDate) {
-                policyExpiryDate = policyExpiryDateRaw; // Already ISO string (YYYY-MM-DD)
+                policyExpiryDate = policyExpiryDateRaw;
             } else {
                 return NextResponse.json({ error: 'Invalid policy expiry date' }, { status: 400 });
             }
         }
 
-
-
-        // Upload damage photos (images)
+        // ✅ Upload images
         const damagePhotos: SanityImageRef[] = [];
         const imageFiles = formData.getAll('damagePhotos');
 
-        if (imageFiles && imageFiles.length > 0) {
-            for (const file of imageFiles) {
-                try {
-                    if (file instanceof File) {
-                        console.log(`Uploading file: ${file.name}, type: ${file.type}, size: ${file.size}`);
-                        const arrayBuffer = await file.arrayBuffer();
-                        const buffer = Buffer.from(arrayBuffer);
-
-                        const asset = await client.assets.upload('image', buffer, {
-                            filename: file.name,
-                            contentType: file.type,
-                        });
-
-                        damagePhotos.push({
-                            _key: uuidv4(),
-                            _type: 'image',
-                            asset: {
-                                _type: 'reference',
-                                _ref: asset._id,
-                            },
-                        });
-                    }
-                } catch (uploadError) {
-                    console.error('Error uploading file:', file instanceof File ? file.name : 'unknown file', uploadError);
-                }
+        for (const file of imageFiles) {
+            if (file instanceof File) {
+                const buffer = Buffer.from(await file.arrayBuffer());
+                const asset = await client.assets.upload('image', buffer, {
+                    filename: file.name,
+                    contentType: file.type,
+                });
+                damagePhotos.push({
+                    _key: uuidv4(),
+                    _type: 'image',
+                    asset: {
+                        _type: 'reference',
+                        _ref: asset._id,
+                    },
+                });
             }
         }
 
-        // Construct the vehicle document to create
-        const vehicleDoc = {
-            _type: 'vehicle',
-            manufacturer,
-            type,
-            model,
-            year,
-            vin,
-            licenceNumber,
-            color,
+        // ✅ Construct full document
+        const document = {
+            _type: 'customerVehicleInfo',
+            fullName,
+            email,
+            phoneNumber,
+            createdBy,
+            vehicle: {
+                manufacturer,
+                type,
+                model,
+                year,
+                vin,
+                licenceNumber,
+                color,
+                damagePhotos: damagePhotos.length > 0 ? damagePhotos : [],
+            },
+            spareParts: {
+                spareParts: sparePartsArray,
+            },
             insurance: {
                 company: insuranceCompany,
                 policyNumber,
                 expiryDate: policyExpiryDate,
                 isCoverageValid,
             },
-            damagePhotos: damagePhotos.length > 0 ? damagePhotos : undefined,
         };
 
-        // Save document in Sanity
-        await client.create(vehicleDoc);
-
-        return NextResponse.json({ success: true });
+        // ✅ Save to Sanity
+        const createdDoc = await client.create(document);
+        return NextResponse.json({ success: true, data: createdDoc });
     } catch (error) {
-        console.error('Error creating vehicle:', error);
+        console.error('Error creating document:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }

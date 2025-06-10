@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
             success: true,
             accessToken,
             refreshToken,  // Added refresh token here for easy retrieval
-            user: { email: user.email, fullName: user.fullName },
+            user: { email: user.email, fullName: user.fullName, id: user._id },
         });
 
         // Set HttpOnly cookie with refresh token (optional, but recommended for security)

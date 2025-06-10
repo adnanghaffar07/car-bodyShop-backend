@@ -1,42 +1,109 @@
 export default {
-  name: 'vehicle',
+  name: 'customerVehicleInfo',
   type: 'document',
-  title: 'Vehicle',
+  title: 'Customer & Vehicle Info',
   fields: [
+    // ✅ Customer Info
     {
-      name: 'manufacturer',
+      name: 'fullName',
       type: 'string',
-      title: 'Manufacturer', // e.g., Honda, Toyota
+      title: 'Full Name',
     },
     {
-      name: 'type',
+      name: 'email',
       type: 'string',
-      title: 'Type', // e.g., Sedan, SUV
+      title: 'Email Address',
     },
     {
-      name: 'model',
+      name: 'phoneNumber',
       type: 'string',
-      title: 'Model', // e.g., Civic, City
-    },
-    {
-      name: 'year',
-      type: 'number',
-      title: 'Year',
+      title: 'Phone Number',
     },
       {
-      name: 'licenceNumber',
+      name: 'createdBy',
       type: 'string',
-      title: 'Licence Number',
+      title: 'Created By (Owner)',
     },
+
+    // ✅ Vehicle Info as an Object
     {
-      name: 'color',
-      type: 'string',
-      title: 'Color',
+      name: 'vehicle',
+      type: 'object',
+      title: 'Vehicle Information',
+      fields: [
+        {
+          name: 'manufacturer',
+          type: 'string',
+          title: 'Manufacturer',
+        },
+        {
+          name: 'type',
+          type: 'string',
+          title: 'Type',
+        },
+        {
+          name: 'model',
+          type: 'string',
+          title: 'Model',
+        },
+        {
+          name: 'year',
+          type: 'number',
+          title: 'Year',
+        },
+        {
+          name: 'licenceNumber',
+          type: 'string',
+          title: 'Licence Number',
+        },
+        {
+          name: 'color',
+          type: 'string',
+          title: 'Color',
+        },
+        {
+          name: 'vin',
+          type: 'string',
+          title: 'VIN Number',
+        },
+        {
+          name: 'damagePhotos',
+          type: 'array',
+          title: 'Damage Photos',
+          of: [{ type: 'image' }],
+        },
+      ],
     },
+
     {
-      name: 'vin',
-      type: 'string',
-      title: 'VIN Number',
+      name: 'spareParts',
+      type: 'object',
+      title: 'Spare Parts Information',
+      fields: [
+        {
+          name: 'spareParts',
+          type: 'array',
+          title: 'Spare Parts',
+          of: [
+            {
+              type: 'object',
+              title: 'Spare Part',
+              fields: [
+                {
+                  name: 'partName',
+                  type: 'string',
+                  title: 'Part Name',
+                },
+                {
+                  name: 'price',
+                  type: 'number',
+                  title: 'Price',
+                },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
       name: 'insurance',
@@ -65,11 +132,6 @@ export default {
         },
       ],
     },
-    {
-  name: 'damagePhotos',
-  type: 'array',
-  title: 'Damage Photos',
-  of: [{ type: 'image' }], // Change from 'file' to 'image'
-}
+
   ],
 }
