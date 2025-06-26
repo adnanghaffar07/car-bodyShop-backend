@@ -1,12 +1,18 @@
 import { client } from '@/sanity/lib/client';
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
+import jwt from 'jsonwebtoken';
 
 export const config = {
   api: {
     bodyParser: false,
   },
 };
+
+const JWT_SECRET = process.env.JWT_SECRET || 'ffftfyjioijioj67899898crtfdr';
+const ACCESS_TOKEN_EXPIRE = '15d';
+const REFRESH_TOKEN_EXPIRE = '30d';
+
 type DocumentItem = {
   _type: 'file';
   _key: string;
@@ -18,7 +24,6 @@ type DocumentItem = {
 
 export async function POST(req: NextRequest) {
   try {
-    // Only accept multipart/form-data
     const contentType = req.headers.get('content-type') || '';
     if (!contentType.includes('multipart/form-data')) {
       return NextResponse.json(
@@ -39,13 +44,25 @@ export async function POST(req: NextRequest) {
       }
       data[field] = value;
     }
+     const email = data.email.toLowerCase();
 
-    // Optional fields
+    // Check if an owner already exists with the same email
+    const existingOwner = await client.fetch(
+      `*[_type == "bodyShopOwner" && email == $email][0]`,
+      { email }
+    );
+
+    if (existingOwner) {
+      return NextResponse.json(
+        { error: 'An account already exists with your email' },
+        { status: 400 }
+      );
+    }
+
     const businessLicense = formData.get('businessLicense');
     const taxId = formData.get('taxId');
     const serviceAreaRadius = formData.get('serviceAreaRadius');
 
-    // Process documents
     const documents: DocumentItem[] = [];
     const files = formData.getAll('documents');
 
@@ -86,7 +103,44 @@ export async function POST(req: NextRequest) {
 
     const createdOwner = await client.create(ownerDoc);
 
-    return NextResponse.json({ success: true, id: createdOwner._id });
+    // JWT payload
+    const basePayload = {
+      userId: createdOwner._id,
+      email: createdOwner.email,
+      fullName: createdOwner.fullName,
+    };
+
+    // Tokens
+    const accessToken = jwt.sign({ ...basePayload, tokenType: 'access' }, JWT_SECRET, {
+      expiresIn: ACCESS_TOKEN_EXPIRE,
+    });
+
+    const refreshToken = jwt.sign({ ...basePayload, tokenType: 'refresh' }, JWT_SECRET, {
+      expiresIn: REFRESH_TOKEN_EXPIRE,
+    });
+
+    // Response
+    const res = NextResponse.json({
+      success: true,
+      message: 'Owner profile created successfully',
+      accessToken,
+      refreshToken,
+      user: {
+        _id: createdOwner._id,
+        ...ownerDoc,
+      },
+    });
+
+    // Set refresh token as HttpOnly cookie
+    res.cookies.set('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/',
+    });
+
+    return res;
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

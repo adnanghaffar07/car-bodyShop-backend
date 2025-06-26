@@ -9,7 +9,6 @@ export async function DELETE(req: NextRequest) {
     if (!ownerId) {
       return NextResponse.json({ error: 'Owner ID is required' }, { status: 400 });
     }
-
       type VehicleDoc = {
       _id: string;
     };

@@ -1,5 +1,4 @@
 // /app/api/vehicles/route.ts
-
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -396,151 +395,155 @@ const vehicleData = {
   }
 };
 
-const spareParts = [
-  // Engine Components
-  'Engine Oil',
-  'Oil Filter',
-  'Air Filter',
-  'Fuel Filter',
-  'Spark Plug',
-  'Glow Plug',
-  'Timing Belt',
-  'Timing Chain',
-  'Serpentine Belt',
-  'Cylinder Head',
-  'Gasket Set',
-  'Piston',
-  'Crankshaft',
-  'Camshaft',
-
-  // Transmission & Drivetrain
-  'Clutch Plate',
-  'Pressure Plate',
-  'Flywheel',
-  'Gearbox',
-  'Driveshaft',
-  'Differential',
-  'Axle Shaft',
-  'Transmission Fluid',
-
-  // Braking System
-  'Brake Pads',
-  'Brake Discs',
-  'Brake Calipers',
-  'Brake Lines',
-  'Brake Drum',
-  'ABS Sensor',
-  'Master Cylinder',
-
-  // Suspension & Steering
-  'Shock Absorber',
-  'Struts',
-  'Control Arm',
-  'Ball Joint',
-  'Tie Rod End',
-  'Steering Rack',
-  'Power Steering Pump',
-  'Stabilizer Bar',
-
-  // Cooling System
-  'Radiator',
-  'Radiator Fan',
-  'Water Pump',
-  'Thermostat',
-  'Coolant Reservoir',
-  'Heater Core',
-  'Cooling Hose',
-
-  // Electrical System
-  'Battery',
-  'Alternator',
-  'Starter Motor',
-  'Ignition Coil',
-  'Fuse Box',
-  'Wiring Harness',
-  'ECU (Engine Control Unit)',
-  'Relays and Fuses',
-
-  // Lighting & Visibility
-  'Headlights',
-  'Tail Light',
-  'Fog Light',
-  'Turn Signal Light',
-  'Interior Dome Light',
-  'Side Mirror Indicator',
-  'Windshield Wiper',
-  'Wiper Motor',
-  'Washer Pump',
-
-  // HVAC (Heating, Ventilation, Air Conditioning)
-  'AC Compressor',
-  'AC Condenser',
-  'AC Evaporator',
-  'AC Blower Motor',
-  'Cabin Air Filter',
-  'Climate Control Panel',
-
-  // Fuel System
-  'Fuel Pump',
-  'Fuel Injector',
-  'Fuel Tank',
-  'Throttle Body',
-  'Carburetor',
-  'Fuel Rail',
-
-  // Exhaust System
-  'Muffler',
-  'Catalytic Converter',
-  'Exhaust Manifold',
-  'Oxygen Sensor',
-  'Tailpipe',
-
-  // Body & Exterior
-  'Bumper',
-  'Grille',
-  'Bonnet (Hood)',
-  'Trunk Lid (Boot)',
-  'Fender',
-  'Door Handle',
-  'Side Mirror',
-  'Rear View Mirror',
-  'Windshield',
-  'Windows',
-  'Spoiler',
-
-  // Interior Components
-  'Dashboard',
-  'Steering Wheel',
-  'Gear Knob',
-  'Car Seat',
-  'Floor Mat',
-  'Center Console',
-  'Instrument Cluster',
-  'Interior Trim',
-
-  // Tires & Wheels
-  'Tire',
-  'Wheel Rim',
-  'Wheel Hub',
-  'Wheel Bearing',
-  'Lug Nut',
-  'Tire Valve',
-
-  // Safety & Security
-  'Airbag',
-  'Seat Belt',
-  'Parking Sensor',
-  'Reverse Camera',
-  'Immobilizer',
-  'Central Locking System',
-
-  // Miscellaneous
-  'Hoses & Belts',
-  'Clips & Fasteners',
-  'Rubber Bushings',
-  'Seals and O-Rings',
-  'Mounts & Brackets'
+const services = [
+  'Car Wash',
+  'Interior Cleaning',
+  'Polishing',
+  'AC Service',
+  'Engine Tuning',
+  'Wheel Alignment',
+  'Wheel Balancing',
+  'Oil Change',
+  'Brake Service',
+  'Suspension Check',
+  'Battery Check',
+  'Diagnostic Service',
+  'Detailing',
+  'Underbody Coating',
+  'Paint Protection Film',
+  'Ceramic Coating'
 ];
 
-  return NextResponse.json({ vehicleData, spareParts });
+const spareParts = [
+  { partId: '001', partName: 'Engine Oil' },
+  { partId: '002', partName: 'Oil Filter' },
+  { partId: '003', partName: 'Air Filter' },
+  { partId: '004', partName: 'Fuel Filter' },
+  { partId: '005', partName: 'Spark Plug' },
+  { partId: '006', partName: 'Glow Plug' },
+  { partId: '007', partName: 'Timing Belt' },
+  { partId: '008', partName: 'Timing Chain' },
+  { partId: '009', partName: 'Serpentine Belt' },
+  { partId: '010', partName: 'Cylinder Head' },
+  { partId: '011', partName: 'Gasket Set' },
+  { partId: '012', partName: 'Piston' },
+  { partId: '013', partName: 'Crankshaft' },
+  { partId: '014', partName: 'Camshaft' },
+
+  { partId: '015', partName: 'Clutch Plate' },
+  { partId: '016', partName: 'Pressure Plate' },
+  { partId: '017', partName: 'Flywheel' },
+  { partId: '018', partName: 'Gearbox' },
+  { partId: '019', partName: 'Driveshaft' },
+  { partId: '020', partName: 'Differential' },
+  { partId: '021', partName: 'Axle Shaft' },
+  { partId: '022', partName: 'Transmission Fluid' },
+
+  { partId: '023', partName: 'Brake Pads' },
+  { partId: '024', partName: 'Brake Discs' },
+  { partId: '025', partName: 'Brake Calipers' },
+  { partId: '026', partName: 'Brake Lines' },
+  { partId: '027', partName: 'Brake Drum' },
+  { partId: '028', partName: 'ABS Sensor' },
+  { partId: '029', partName: 'Master Cylinder' },
+
+  { partId: '030', partName: 'Shock Absorber' },
+  { partId: '031', partName: 'Struts' },
+  { partId: '032', partName: 'Control Arm' },
+  { partId: '033', partName: 'Ball Joint' },
+  { partId: '034', partName: 'Tie Rod End' },
+  { partId: '035', partName: 'Steering Rack' },
+  { partId: '036', partName: 'Power Steering Pump' },
+  { partId: '037', partName: 'Stabilizer Bar' },
+
+  { partId: '038', partName: 'Radiator' },
+  { partId: '039', partName: 'Radiator Fan' },
+  { partId: '040', partName: 'Water Pump' },
+  { partId: '041', partName: 'Thermostat' },
+  { partId: '042', partName: 'Coolant Reservoir' },
+  { partId: '043', partName: 'Heater Core' },
+  { partId: '044', partName: 'Cooling Hose' },
+
+  { partId: '045', partName: 'Battery' },
+  { partId: '046', partName: 'Alternator' },
+  { partId: '047', partName: 'Starter Motor' },
+  { partId: '048', partName: 'Ignition Coil' },
+  { partId: '049', partName: 'Fuse Box' },
+  { partId: '050', partName: 'Wiring Harness' },
+  { partId: '051', partName: 'ECU (Engine Control Unit)' },
+  { partId: '052', partName: 'Relays and Fuses' },
+
+  { partId: '053', partName: 'Headlights' },
+  { partId: '054', partName: 'Tail Light' },
+  { partId: '055', partName: 'Fog Light' },
+  { partId: '056', partName: 'Turn Signal Light' },
+  { partId: '057', partName: 'Interior Dome Light' },
+  { partId: '058', partName: 'Side Mirror Indicator' },
+  { partId: '059', partName: 'Windshield Wiper' },
+  { partId: '060', partName: 'Wiper Motor' },
+  { partId: '061', partName: 'Washer Pump' },
+
+  { partId: '062', partName: 'AC Compressor' },
+  { partId: '063', partName: 'AC Condenser' },
+  { partId: '064', partName: 'AC Evaporator' },
+  { partId: '065', partName: 'AC Blower Motor' },
+  { partId: '066', partName: 'Cabin Air Filter' },
+  { partId: '067', partName: 'Climate Control Panel' },
+
+  { partId: '068', partName: 'Fuel Pump' },
+  { partId: '069', partName: 'Fuel Injector' },
+  { partId: '070', partName: 'Fuel Tank' },
+  { partId: '071', partName: 'Throttle Body' },
+  { partId: '072', partName: 'Carburetor' },
+  { partId: '073', partName: 'Fuel Rail' },
+
+  { partId: '074', partName: 'Muffler' },
+  { partId: '075', partName: 'Catalytic Converter' },
+  { partId: '076', partName: 'Exhaust Manifold' },
+  { partId: '077', partName: 'Oxygen Sensor' },
+  { partId: '078', partName: 'Tailpipe' },
+
+  { partId: '079', partName: 'Bumper' },
+  { partId: '080', partName: 'Grille' },
+  { partId: '081', partName: 'Bonnet (Hood)' },
+  { partId: '082', partName: 'Trunk Lid (Boot)' },
+  { partId: '083', partName: 'Fender' },
+  { partId: '084', partName: 'Door Handle' },
+  { partId: '085', partName: 'Side Mirror' },
+  { partId: '086', partName: 'Rear View Mirror' },
+  { partId: '087', partName: 'Windshield' },
+  { partId: '088', partName: 'Windows' },
+  { partId: '089', partName: 'Spoiler' },
+
+  { partId: '090', partName: 'Dashboard' },
+  { partId: '091', partName: 'Steering Wheel' },
+  { partId: '092', partName: 'Gear Knob' },
+  { partId: '093', partName: 'Car Seat' },
+  { partId: '094', partName: 'Floor Mat' },
+  { partId: '095', partName: 'Center Console' },
+  { partId: '096', partName: 'Instrument Cluster' },
+  { partId: '097', partName: 'Interior Trim' },
+
+  { partId: '098', partName: 'Tire' },
+  { partId: '099', partName: 'Wheel Rim' },
+  { partId: '100', partName: 'Wheel Hub' },
+  { partId: '101', partName: 'Wheel Bearing' },
+  { partId: '102', partName: 'Lug Nut' },
+  { partId: '103', partName: 'Tire Valve' },
+
+  { partId: '104', partName: 'Airbag' },
+  { partId: '105', partName: 'Seat Belt' },
+  { partId: '106', partName: 'Parking Sensor' },
+  { partId: '107', partName: 'Reverse Camera' },
+  { partId: '108', partName: 'Immobilizer' },
+  { partId: '109', partName: 'Central Locking System' },
+
+  { partId: '110', partName: 'Hoses & Belts' },
+  { partId: '111', partName: 'Clips & Fasteners' },
+  { partId: '112', partName: 'Rubber Bushings' },
+  { partId: '113', partName: 'Seals and O-Rings' },
+  { partId: '114', partName: 'Mounts & Brackets' }
+];
+
+  return NextResponse.json({ vehicleData, spareParts, services });
 }

@@ -34,7 +34,7 @@ type Insurance = {
   expiryDate: string;
 };
 
-export type InvoiceData = {
+export type Quotation = {
   // Owner (Body Shop) Info
   businessName: string;
   businessEmail: string;
@@ -67,7 +67,7 @@ export type InvoiceData = {
   insurance: Insurance;
 };
 
-export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
+export async function generateInvoicePDF(data: Quotation): Promise<Buffer> {
   const pdfDoc = await PDFDocument.create();
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -109,8 +109,8 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     color: rgb(0.1, 0.2, 0.6),
   });
 
-  page.drawText('Invoice', {
-    x: width - margin - 42,
+  page.drawText('QUOTATION', {
+    x: width - margin - 80,
     y,
     size: 14,
     font: boldFont,
@@ -543,10 +543,10 @@ export async function sendInvoiceEmail(toEmail: string, pdfBuffer: Buffer, fullN
   await transporter.sendMail({
     from: `${businessName} <adnan@codeautomation.dev>`,
     to: toEmail,
-    subject: `Invoice for ${fullName}`,
-    text: 'Please find attached your invoice.',
+    subject: `Quotation for ${fullName}`,
+    text: 'Please find attached your quotation.',
     attachments: [{
-      filename: `${fullName}-invoice (${timestamp}).pdf`,
+      filename: `${fullName}-quotation (${timestamp}).pdf`,
       content: pdfBuffer,
     }],
   });

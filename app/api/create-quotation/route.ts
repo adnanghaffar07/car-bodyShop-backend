@@ -1,10 +1,10 @@
-import { generateInvoicePDF, sendInvoiceEmail } from '@/lib/invoice-utils';
+import { generateInvoicePDF, sendInvoiceEmail } from '@/lib/quotation-utils';
+import { Quotation } from '@/lib/quotation-utils';
 import { NextResponse } from 'next/server';
-import type { InvoiceData } from '@/lib/invoice-utils';
 
 export async function POST(request: Request) {
   try {
-    const data: InvoiceData = await request.json();
+    const data: Quotation = await request.json();
 
     // 1. Generate PDF
     const pdfBuffer = await generateInvoicePDF(data);
@@ -17,13 +17,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Invoice sent and generated successfully.',
+      message: 'Quotation sent and generated successfully.',
       pdfBase64,
     });
   } catch (error) {
-    console.error('Invoice generation failed:', error);
+    console.error('Quotation generation failed:', error);
     return NextResponse.json(
-      { success: false, message: 'Failed to generate/send invoice.' },
+      { success: false, message: 'Failed to generate/send Quotation.' },
       { status: 500 }
     );
   }

@@ -1,8 +1,13 @@
 import React from 'react'
+import { Navbar } from './components/Navbar'
+// import HomePage from './components/VehicleIntake'
 
 const page = () => {
   return (
-    <div>Car BodyShop Backend</div>
+    <div>
+      <Navbar/>
+      {/* <HomePage/> */}
+    </div>
   )
 }
 

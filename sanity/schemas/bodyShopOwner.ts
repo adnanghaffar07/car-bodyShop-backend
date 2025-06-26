@@ -1,5 +1,3 @@
-// /schemas/bodyShopOwner.ts
-
 export default {
   name: 'bodyShopOwner',
   title: 'Body Shop Owner',
@@ -29,7 +27,6 @@ export default {
       name: 'password',
       title: 'Password',
       type: 'string',
-      description: 'This should ideally be hashed or stored in a secure auth service.',
     },
     {
       name: 'shopAddress',
