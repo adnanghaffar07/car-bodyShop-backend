@@ -34,6 +34,13 @@ export default {
       type: 'string',
     },
     {
+      name: 'state',
+      title: 'State (USA)',
+      type: 'string',
+    },
+
+    { name: 'salesTaxPercent', type: 'number', title: 'Sales Tax (%)' },
+    {
       name: 'businessLicense',
       title: 'Business License Number / Registration ID',
       type: 'string',
@@ -47,6 +54,14 @@ export default {
       name: 'serviceAreaRadius',
       title: 'Service Area or Coverage Radius (in km or miles)',
       type: 'number',
+    },
+    {
+      name: 'logo',
+      title: 'Shop Logo',
+      type: 'image',
+      options: {
+        hotspot: true
+      }
     },
     {
       name: 'documents',

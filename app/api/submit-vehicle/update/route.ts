@@ -55,12 +55,13 @@ export async function PUT(request: Request) {
     const policyExpiryDateRaw = formData.get('policyExpiryDate')?.toString().trim();
     const isCoverageValid = ['true', 'on', '1'].includes(formData.get('isCoverageValid')?.toString().toLowerCase() || '');
 
-  // ✅ Spare Parts (with quantity + labourTime)
+    // ✅ Spare Parts (with quantity + labourTime)
     const partNames = formData.getAll('partName');
     const partNumbers = formData.getAll('partNumber');
     const partPrices = formData.getAll('price');
     const partQuantities = formData.getAll('quantity');
     const partLabourTimes = formData.getAll('labourTime');
+    const partLabourCosts = formData.getAll('labourCostPerHour');
 
     const sparePartsArray = partNames.map((part, index) => ({
       _key: uuidv4(),
@@ -70,6 +71,8 @@ export async function PUT(request: Request) {
       price: parseFloat(partPrices[index]?.toString().trim() || '0'),
       quantity: parseInt(partQuantities[index]?.toString().trim() || '1', 10),
       labourTime: parseFloat(partLabourTimes[index]?.toString().trim() || '0'),
+      labourCostPerHour: parseFloat(partLabourCosts[index]?.toString().trim() || '0'), // ✅ NEW FIELD
+
     }));
 
 
@@ -126,41 +129,41 @@ export async function PUT(request: Request) {
         });
       }
     }
-   
+
     // Patch Payload
     const patchData = {
-   fullName,
-  email,
-  phoneNumber,
-  createdBy,
-  vehicle: {
-    manufacturer,
-    type,
-    model,
-    year,
-    vin,
-    licenceNumber,
-    color,
-    damagePhotos,
-  },
-  spareParts: sparePartsArray,
-  services: servicesArray,
-  insurance: {
-    company: insuranceCompany,
-    policyNumber,
-    expiryDate: policyExpiryDate,
-    isCoverageValid,
-  },
-  estimatedTotalPrice: [
-    ...sparePartsArray,
-    ...servicesArray
-  ].reduce((sum, item) => sum + (item.price ?? 0), 0),
+      fullName,
+      email,
+      phoneNumber,
+      createdBy,
+      vehicle: {
+        manufacturer,
+        type,
+        model,
+        year,
+        vin,
+        licenceNumber,
+        color,
+        damagePhotos,
+      },
+      spareParts: sparePartsArray,
+      services: servicesArray,
+      insurance: {
+        company: insuranceCompany,
+        policyNumber,
+        expiryDate: policyExpiryDate,
+        isCoverageValid,
+      },
+      estimatedTotalPrice: [
+        ...sparePartsArray,
+        ...servicesArray
+      ].reduce((sum, item) => sum + (item.price ?? 0), 0),
 
-  totalLabourTime: [
-    ...sparePartsArray,
-    ...servicesArray
-  ].reduce((sum, item) => sum + (item.labourTime ?? 0), 0),
-};
+      totalLabourTime: [
+        ...sparePartsArray,
+        ...servicesArray
+      ].reduce((sum, item) => sum + (item.labourTime ?? 0), 0),
+    };
 
     const updatedDoc = await client.patch(docId).set(patchData).commit();
     return NextResponse.json({ success: true, data: updatedDoc }, { status: 200 });

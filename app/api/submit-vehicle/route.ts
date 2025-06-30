@@ -56,6 +56,7 @@ export async function POST(request: Request) {
     const partPrices = formData.getAll('price');
     const partQuantities = formData.getAll('quantity');
     const partLabourTimes = formData.getAll('labourTime');
+    const partLabourCosts = formData.getAll('labourCostPerHour');
 
     const sparePartsArray = partNames.map((part, index) => ({
       _key: uuidv4(),
@@ -65,8 +66,8 @@ export async function POST(request: Request) {
       price: parseFloat(partPrices[index]?.toString().trim() || '0'),
       quantity: parseInt(partQuantities[index]?.toString().trim() || '1', 10),
       labourTime: parseFloat(partLabourTimes[index]?.toString().trim() || '0'),
+      labourCostPerHour: parseFloat(partLabourCosts[index]?.toString().trim() || '0'), // ✅ NEW FIELD
     }));
-
 
     // ✅ Services (with quantity + labourTime)
     const serviceNames = formData.getAll('serviceName');

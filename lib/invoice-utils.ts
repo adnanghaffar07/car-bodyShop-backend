@@ -79,26 +79,32 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
   // ✅ Default fallback logo path
   const fallbackLogoPath = path.join(process.cwd(), 'public', 'car-logo.jpg');
 
+  // ✅ Use logoPath from data (sent from frontend), or fallback
   let logoPathToUse = data.logoPath;
+
   if (!logoPathToUse || !fs.existsSync(logoPathToUse)) {
     logoPathToUse = fallbackLogoPath;
   }
 
   if (fs.existsSync(logoPathToUse)) {
     const imageBytes = fs.readFileSync(logoPathToUse);
-    const isPng = logoPathToUse.endsWith('.png');
-    const image = isPng ? await pdfDoc.embedPng(imageBytes) : await pdfDoc.embedJpg(imageBytes);
-    const desiredHeight = 36; // pixels — small logo
+
+    // Auto-detect PNG or JPG based on file extension
+    const isPng = logoPathToUse.toLowerCase().endsWith('.png');
+    const image = isPng
+      ? await pdfDoc.embedPng(imageBytes)
+      : await pdfDoc.embedJpg(imageBytes);
+
+    const desiredHeight = 36; // Logo height in PDF
     const scale = desiredHeight / image.height;
     const logoWidth = image.width * scale;
 
     page.drawImage(image, {
       x: margin,
-      y: y - desiredHeight + 26,
+      y: y - desiredHeight + 26, // Adjust based on your layout
       width: logoWidth,
       height: desiredHeight,
     });
-
   }
   // Business Info & Invoice title
   page.drawText(data.businessName.toUpperCase(), {
@@ -300,8 +306,6 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     currentPage.drawText('LABOR (Hrs)', { x: margin + 310, y: textY, size: 8, font: boldFont });
     currentPage.drawText('UNIT PRICE', { x: margin + 380, y: textY, size: 8, font: boldFont });
     currentPage.drawText('AMOUNT', { x: margin + 450, y: textY, size: 8, font: boldFont });
-
-
     y -= 1;
     currentPage.drawLine({
       start: { x: margin, y },
@@ -312,7 +316,6 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
 
     y -= 10;
   };
-
 
   // Draw table
   drawTableHeader();
@@ -410,25 +413,18 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
   currentPage.drawText('Total Labor Time (hrs):', { x: startX, y, size: 10, font });
   currentPage.drawText(`${totalLabourTime}`, { x: startX + 120, y, size: 10, font });
 
-  const grandTotal =
-    totalSpare +
-    totalService +
-    (data.laborFee || 0) +
-    (data.serviceFee || 0) +
-    (data.salesTax || 0);
 
   // Only show fees if they are greater than 0
   if ((data.laborFee || 0) > 0) {
     drawSummaryRow('Labor Fee:', data.laborFee || 0);
   }
-  if ((data.serviceFee || 0) > 0) {
-    drawSummaryRow('Service Charges:', data.serviceFee || 0);
-  }
+
   if ((data.salesTax || 0) > 0) {
     drawSummaryRow('Sales Tax (Spare Parts):', data.salesTax || 0);
   }
 
   // Grand Total
+if (data.totalCost || data.totalEstimate) {
   y -= 20;
   currentPage.drawText('TOTAL ESTIMATE:', {
     x: startX,
@@ -436,18 +432,22 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     size: 12,
     font: boldFont,
   });
-  currentPage.drawText(`$${grandTotal.toFixed(2)}`, {
+
+  const total = data.totalCost || data.totalEstimate || 0;
+  currentPage.drawText(`$${total.toFixed(2)}`, {
     x: startX + 120,
     y,
     size: 12,
     font: boldFont,
     color: rgb(0, 0.3, 0.5),
   });
+}
+
 
   y -= -40; // Add some spacing
 
   // Draw signature on the left
-  currentPage.drawText('Authorized Signature:', {
+  currentPage.drawText('Signature/Stamp:', {
     x: margin,
     y,
     size: 10,
@@ -455,8 +455,8 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
   });
 
   currentPage.drawLine({
-    start: { x: margin + 120, y: y + 2 },
-    end: { x: margin + 270, y: y + 2 },
+    start: { x: margin + 90, y: y + 2 },
+    end: { x: margin + 240, y: y + 2 },
     thickness: 0.5,
     color: rgb(0.5, 0.5, 0.5),
   });
@@ -468,23 +468,23 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     currentPage = addNewPage();
   }
 
-  const footerY = 100;
+  const footerY = 50;
   // --- Terms & Conditions ---
-  currentPage.drawText('Terms & Conditions:', {
-    x: margin,
-    y: footerY,
-    size: 10,
-    font: boldFont,
-  });
-  currentPage.drawText(`Payment is due within 15 days. Make checks payable to ${data.businessName}.`, {
-    x: margin,
-    y: footerY - 12,
-    size: 9,
-    font,
-  });
+  // currentPage.drawText('Terms & Conditions:', {
+  //   x: margin,
+  //   y: footerY,
+  //   size: 10,
+  //   font: boldFont,
+  // });
+  // currentPage.drawText(`Payment is due within 15 days. Make checks payable to ${data.businessName}.`, {
+  //   x: margin,
+  //   y: footerY - 12,
+  //   size: 9,
+  //   font,
+  // });
   currentPage.drawText('Thank you for your business!', {
     x: margin,
-    y: footerY - 32,
+    y: footerY - 15,
     size: 10,
     font,
     color: rgb(0.1, 0.4, 0.1),
@@ -492,7 +492,7 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
 
   // --- Powered by ---
   currentPage.drawText('Powered by CodeAutomation.ai', {
-    x: width - margin - 100,
+    x: width - margin - 110,
     y: 30,
     size: 8,
     font,
@@ -507,16 +507,16 @@ export async function generateInvoicePDF(data: InvoiceData): Promise<Buffer> {
     color: rgb(0.8, 0.8, 0.8),
   });
 
-  currentPage.drawText('Terms & Conditions:', { x: margin, y: footerY, size: 10, font: boldFont });
-  currentPage.drawText(`Payment is due within 15 days. Make checks payable to ${data.businessName}.`, {
-    x: margin,
-    y: footerY - 12,
-    size: 9,
-    font,
-  });
+  // currentPage.drawText('Terms & Conditions:', { x: margin, y: footerY, size: 10, font: boldFont });
+  // currentPage.drawText(`Payment is due within 15 days. Make checks payable to ${data.businessName}.`, {
+  //   x: margin,
+  //   y: footerY - 12,
+  //   size: 9,
+  //   font,
+  // });
   currentPage.drawText('Thank you for your business!', {
     x: margin,
-    y: footerY - 32,
+    y: footerY - 15,
     size: 10,
     font,
     color: rgb(0.1, 0.4, 0.1),
@@ -535,13 +535,13 @@ export async function sendInvoiceEmail(toEmail: string, pdfBuffer: Buffer, fullN
     port: 465,
     secure: true,
     auth: {
-      user: 'adnan@codeautomation.dev',
-      pass: 'hueq dwkd zknz apuq',
+      user: 'ayesha@codeautomation.dev',
+      pass: 'eexg jiwa qqki mtyx',
     },
   });
 
   await transporter.sendMail({
-    from: `${businessName} <adnan@codeautomation.dev>`,
+    from: `${businessName} <ayesha@codeautomation.dev>`,
     to: toEmail,
     subject: `Invoice for ${fullName}`,
     text: 'Please find attached your invoice.',

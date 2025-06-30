@@ -42,15 +42,15 @@ export default {
           title: 'Spare Part',
           fields: [
             { name: 'partName', type: 'string', title: 'Part Name' },
-            { name: 'partNumber', type: 'string', title: 'Part Number' }, // ✅ New field
+            { name: 'partNumber', type: 'string', title: 'Part Number' },
             { name: 'quantity', type: 'number', title: 'Quantity', initialValue: 1 },
             { name: 'price', type: 'number', title: 'Price' },
             { name: 'labourTime', type: 'number', title: 'Labour Time (in Hours)' },
+            { name: 'labourCostPerHour', type: 'number', title: 'Labour Cost per Hour' }, // ✅ Added field
           ],
         },
       ],
     },
-
     // Services
     {
       name: 'services',

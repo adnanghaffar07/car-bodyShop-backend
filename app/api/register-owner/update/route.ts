@@ -43,10 +43,34 @@ export async function PUT(req: NextRequest) {
     const businessLicense = formData.get('businessLicense');
     const taxId = formData.get('taxId');
     const serviceAreaRadius = formData.get('serviceAreaRadius');
+    const salesTaxPercentRaw = formData.get('salesTaxPercent');
+    const salesTaxPercent =
+      typeof salesTaxPercentRaw === 'string' ? parseFloat(salesTaxPercentRaw) : null;
+    const state = formData.get('state');
 
     const documents: DocumentItem[] = [];
     const files = formData.getAll('documents');
 
+
+    // Handle uploaded logo image
+    const logoFile = formData.get('logo');
+    let logoAssetRef = null;
+
+    if (logoFile instanceof File) {
+      const buffer = Buffer.from(await logoFile.arrayBuffer());
+      const logoAsset = await client.assets.upload('image', buffer, {
+        filename: logoFile.name,
+        contentType: logoFile.type,
+      });
+
+      logoAssetRef = {
+        _type: 'image',
+        asset: {
+          _type: 'reference',
+          _ref: logoAsset._id,
+        },
+      };
+    }
     for (const file of files) {
       if (file instanceof File) {
         const buffer = Buffer.from(await file.arrayBuffer());
@@ -71,8 +95,12 @@ export async function PUT(req: NextRequest) {
       businessLicense: typeof businessLicense === 'string' ? businessLicense : '',
       taxId: typeof taxId === 'string' ? taxId : '',
       serviceAreaRadius: serviceAreaRadius ? Number(serviceAreaRadius) : null,
+      salesTaxPercent: typeof salesTaxPercent === 'number' ? salesTaxPercent : undefined,
+      state: typeof state === 'string' ? state : '',
+      logo: logoAssetRef ?? undefined,
       documents,
     };
+
 
     const updated = await client
       .patch(ownerId)

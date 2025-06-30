@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       }
       data[field] = value;
     }
-     const email = data.email.toLowerCase();
+    const email = data.email.toLowerCase();
 
     // Check if an owner already exists with the same email
     const existingOwner = await client.fetch(
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
     const businessLicense = formData.get('businessLicense');
     const taxId = formData.get('taxId');
     const serviceAreaRadius = formData.get('serviceAreaRadius');
-
+    const state = formData.get('state');
     const documents: DocumentItem[] = [];
     const files = formData.getAll('documents');
 
@@ -87,6 +87,29 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Upload logo if provided
+    const logoFile = formData.get('logo');
+    let logoAssetRef = null;
+
+    if (logoFile instanceof File) {
+      const arrayBuffer = await logoFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+      const logoAsset = await client.assets.upload('image', buffer, {
+        filename: logoFile.name,
+        contentType: logoFile.type,
+      });
+
+      logoAssetRef = {
+        _type: 'image',
+        asset: {
+          _type: 'reference',
+          _ref: logoAsset._id,
+        },
+      };
+    }
+
+
     const ownerDoc = {
       _type: 'bodyShopOwner',
       fullName: data.fullName,
@@ -95,11 +118,14 @@ export async function POST(req: NextRequest) {
       phoneNumber: data.phoneNumber,
       password: data.password,
       shopAddress: data.shopAddress,
+      state: typeof state === 'string' ? state : '',
       businessLicense: typeof businessLicense === 'string' ? businessLicense : '',
       taxId: typeof taxId === 'string' ? taxId : '',
       serviceAreaRadius: serviceAreaRadius ? Number(serviceAreaRadius) : null,
       documents,
+      logo: logoAssetRef,
     };
+
 
     const createdOwner = await client.create(ownerDoc);
 
